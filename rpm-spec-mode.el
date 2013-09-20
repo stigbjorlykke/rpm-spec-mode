@@ -1,10 +1,10 @@
 ;;; rpm-spec-mode.el --- RPM spec file editing commands for Emacs/XEmacs
 
-;; Copyright (C) 1997-2002 Stig Bjørlykke, <stigb@tihlde.org>
+;; Copyright (C) 1997-2013 Stig Bjørlykke, <stig@bjorlykke.org>
 
-;; Author:   Stig Bjørlykke, <stigb@tihlde.org>
+;; Author:   Stig Bjørlykke, <stig@bjorlykke.org>
 ;; Keywords: unix, languages
-;; Version:  0.12
+;; Version:  0.14
 
 ;; This file is part of XEmacs.
 
@@ -50,7 +50,7 @@
 ;; This mode is used for editing spec files used for building RPM packages.
 ;;
 ;; Most recent version is available from:
-;;  <URL:http://www.tihlde.org/~stigb/rpm-spec-mode.el>
+;;  <https://github.com/bjorlykke/rpm-spec-mode>
 ;;
 ;; Put this in your .emacs file to enable autoloading of rpm-spec-mode,
 ;; and auto-recognition of ".spec" files:
@@ -64,7 +64,7 @@
 ;;; Code:
 (require 'compile)
 
-(defconst rpm-spec-mode-version "0.12" "Version of `rpm-spec-mode'.")
+(defconst rpm-spec-mode-version "0.14" "Version of `rpm-spec-mode'.")
 
 (defgroup rpm-spec nil
   "RPM spec mode with Emacs/XEmacs enhancements."
@@ -1442,7 +1442,7 @@ if one is present in the file."
   (message
    (concat "rpm-spec-mode version "
            rpm-spec-mode-version
-           " by Stig Bjørlykke, <stigb@tihlde.org>")))
+           " by Stig Bjørlykke, <stig@bjorlykke.org>")))
 
 ;;;###autoload(add-to-list 'auto-mode-alist '("\\.spec\\(\\.in\\)?$" . rpm-spec-mode))
 
