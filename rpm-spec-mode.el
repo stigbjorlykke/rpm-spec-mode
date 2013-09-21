@@ -842,7 +842,7 @@ controls whether case is significant."
   (save-excursion
     (goto-char (point-max))
     (if (search-backward-regexp (concat "^" what "\\([0-9]*\\):") nil t)
-        (let ((release (1+ (string-to-int (match-string 1)))))
+        (let ((release (1+ (string-to-number (match-string 1)))))
           (forward-line 1)
           (let ((default-directory (concat (rpm-topdir) "/SOURCES/")))
             (insert what (int-to-string release) ": "
@@ -1274,7 +1274,7 @@ command."
          ;; Try to find the last digit-only group of a dot-separated release string
          (concat "^\\(Release[ \t]*:[ \t]*\\)"
                  "\\(.*[ \t\\.}]\\)\\([0-9]+\\)\\([ \t\\.%].*\\|$\\)") nil t)
-        (let ((release (1+ (string-to-int (match-string 3)))))
+        (let ((release (1+ (string-to-number (match-string 3)))))
           (setq release
                 (concat (match-string 2) (int-to-string release) (match-string 4)))
           (replace-match (concat (match-string 1) release))
@@ -1348,7 +1348,7 @@ if one is present in the file."
                    (search-forward-regexp
                     (concat "%define[ \t]+" macros
                             "[ \t]+\\(\\([0-9]\\|\\.\\)+\\)\\(.*\\)"))
-                   (concat macros " " (int-to-string (1+ (string-to-int
+                   (concat macros " " (int-to-string (1+ (string-to-number
                                                           (match-string 1))))
                            (match-string 3)))
                str)))
