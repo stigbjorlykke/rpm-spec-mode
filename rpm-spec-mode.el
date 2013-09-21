@@ -246,7 +246,7 @@ value returned by function `user-mail-address'."
 (defconst rpm-scripts
   '("pre" "post" "preun" "postun"
     "trigger" "triggerin" "triggerprein" "triggerun" "triggerpostun"
-    "pretrans" "posttrans")
+    "pretrans" "posttrans" "verifyscript")
   "List of rpm scripts.")
 (defconst rpm-section-seperate "^%\\(\\w+\\)\\s-")
 (defconst rpm-section-regexp
