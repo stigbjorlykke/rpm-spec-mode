@@ -34,6 +34,8 @@
 ;;          <teg@redhat.com> for Red Hat adaptions and some fixes.
 ;;     Chmouel Boudjnah <chmouel@mandrakesoft.com> for Mandrake fixes.
 ;;     Ville Skyttä  <scop@xemacs.org> for some fixes.
+;;     Adam Spiers <elisp@adamspiers.org> for GNU emacs compilation
+;;          and other misc fixes.
 
 ;;; ToDo:
 
@@ -65,6 +67,8 @@
 (require 'compile)
 
 (defconst rpm-spec-mode-version "0.14" "Version of `rpm-spec-mode'.")
+
+(eval-and-compile (defvar running-xemacs nil))
 
 (defgroup rpm-spec nil
   "RPM spec mode with Emacs/XEmacs enhancements."
@@ -246,7 +250,7 @@ value returned by function `user-mail-address'."
 (defconst rpm-scripts
   '("pre" "post" "preun" "postun"
     "trigger" "triggerin" "triggerprein" "triggerun" "triggerpostun"
-    "pretrans" "posttrans")
+    "pretrans" "posttrans" "verifyscript")
   "List of rpm scripts.")
 (defconst rpm-section-seperate "^%\\(\\w+\\)\\s-")
 (defconst rpm-section-regexp
@@ -482,6 +486,8 @@ value returned by function `user-mail-address'."
   (modify-syntax-entry ?| "." rpm-spec-mode-syntax-table)
   (modify-syntax-entry ?\' "." rpm-spec-mode-syntax-table))
 
+(eval-when-compile (or running-xemacs (defun set-keymap-name (a b))))
+
 (defvar rpm-spec-mode-map nil
   "Keymap used in `rpm-spec-mode'.")
 (unless rpm-spec-mode-map
@@ -604,7 +610,7 @@ value returned by function `user-mail-address'."
          '(1 'rpm-spec-tag-face))
    '("%\\(de\\(fine\\|scription\\)\\|files\\|global\\|package\\)[ \t]+\\([^-][^ \t\n]*\\)"
      (3 rpm-spec-package-face))
-   '("%p\\(ost\\|re\\)\\(un\\|trans\\)?[ \t]+\\([^-][^ \t\n]*\\)"
+   '("^%p\\(ost\\|re\\)\\(un\\|trans\\)?[ \t]+\\([^-][^ \t\n]*\\)"
      (3 rpm-spec-package-face))
    '("%configure " 0 rpm-spec-macro-face)
    '("%dir[ \t]+\\([^ \t\n]+\\)[ \t]*" 1 rpm-spec-dir-face)
@@ -699,8 +705,7 @@ with no args, if that value is non-nil."
 
 (defun rpm-command-filter (process string)
   "Filter to process normal output."
-  (save-excursion
-    (set-buffer (process-buffer process))
+  (with-current-buffer (process-buffer process)
     (save-excursion
       (goto-char (process-mark process))
       (insert-before-markers string)
@@ -811,22 +816,23 @@ controls whether case is significant."
   (beginning-of-line)
   (if (not what)
       (setq what (rpm-completing-read "Tag: " rpm-tags-list)))
-  (if (string-match "^%" what)
-      (setq read-text (concat "Packagename for " what ": ")
-            insert-text (concat what " "))
-    (setq read-text (concat what ": ")
-          insert-text (concat what ": ")))
-  (cond
-   ((string-equal what "Group")
-    (rpm-insert-group))
-   ((string-equal what "Source")
-    (rpm-insert-n "Source"))
-   ((string-equal what "Patch")
-    (rpm-insert-n "Patch"))
-   (t
-    (if file-completion
-        (insert insert-text (read-file-name (concat read-text) "" "" nil) "\n")
-      (insert insert-text (read-from-minibuffer (concat read-text)) "\n")))))
+  (let (read-text insert-text)
+    (if (string-match "^%" what)
+        (setq read-text (concat "Packagename for " what ": ")
+              insert-text (concat what " "))
+      (setq read-text (concat what ": ")
+            insert-text (concat what ": ")))
+    (cond
+     ((string-equal what "Group")
+      (call-interactively 'rpm-insert-group))
+     ((string-equal what "Source")
+      (rpm-insert-n "Source"))
+     ((string-equal what "Patch")
+      (rpm-insert-n "Patch"))
+     (t
+      (if file-completion
+          (insert insert-text (read-file-name (concat read-text) "" "" nil) "\n")
+        (insert insert-text (read-from-minibuffer (concat read-text)) "\n"))))))
 
 (defun rpm-topdir ()
   (or
@@ -842,7 +848,7 @@ controls whether case is significant."
   (save-excursion
     (goto-char (point-max))
     (if (search-backward-regexp (concat "^" what "\\([0-9]*\\):") nil t)
-        (let ((release (1+ (string-to-int (match-string 1)))))
+        (let ((release (1+ (string-to-number (match-string 1)))))
           (forward-line 1)
           (let ((default-directory (concat (rpm-topdir) "/SOURCES/")))
             (insert what (int-to-string release) ": "
@@ -1018,14 +1024,14 @@ leave point at previous location."
   (if (and (buffer-modified-p)
            (y-or-n-p (format "Buffer %s modified, save it? " (buffer-name))))
       (save-buffer))
-  (setq rpm-buffer-name
-        (concat "*" rpm-spec-build-command " " buildoptions " "
-                (file-name-nondirectory buffer-file-name) "*"))
-  (rpm-process-check rpm-buffer-name)
-  (if (get-buffer rpm-buffer-name)
-      (kill-buffer rpm-buffer-name))
-  (create-file-buffer rpm-buffer-name)
-  (display-buffer rpm-buffer-name)
+  (let ((rpm-buffer-name
+         (concat "*" rpm-spec-build-command " " buildoptions " "
+                 (file-name-nondirectory buffer-file-name) "*")))
+    (rpm-process-check rpm-buffer-name)
+    (if (get-buffer rpm-buffer-name)
+        (kill-buffer rpm-buffer-name))
+    (create-file-buffer rpm-buffer-name)
+    (display-buffer rpm-buffer-name))
   (setq buildoptions (list buildoptions buffer-file-name))
   (if (or rpm-spec-short-circuit rpm-spec-nobuild)
       (setq rpm-no-gpg t))
@@ -1215,17 +1221,17 @@ command."
 (defun rpm-update-mode-name ()
   "Update `mode-name' according to values set."
   (setq mode-name "RPM-SPEC")
-  (setq modes (concat (if rpm-spec-add-attr      "A")
-                      (if rpm-spec-clean         "C")
-                      (if rpm-spec-nodeps        "D")
-                      (if rpm-spec-sign-gpg      "G")
-                      (if rpm-spec-nobuild       "N")
-                      (if rpm-spec-rmsource      "R")
-                      (if rpm-spec-short-circuit "S")
-		      (if rpm-spec-quiet         "Q")
-                      ))
-  (if (not (equal modes ""))
-      (setq mode-name (concat mode-name ":" modes))))
+  (let ((modes (concat (if rpm-spec-add-attr      "A")
+                       (if rpm-spec-clean         "C")
+                       (if rpm-spec-nodeps        "D")
+                       (if rpm-spec-sign-gpg      "G")
+                       (if rpm-spec-nobuild       "N")
+                       (if rpm-spec-rmsource      "R")
+                       (if rpm-spec-short-circuit "S")
+                       (if rpm-spec-quiet         "Q")
+                       )))
+    (if (not (equal modes ""))
+        (setq mode-name (concat mode-name ":" modes)))))
 
 ;;------------------------------------------------------------
 
@@ -1274,7 +1280,7 @@ command."
          ;; Try to find the last digit-only group of a dot-separated release string
          (concat "^\\(Release[ \t]*:[ \t]*\\)"
                  "\\(.*[ \t\\.}]\\)\\([0-9]+\\)\\([ \t\\.%].*\\|$\\)") nil t)
-        (let ((release (1+ (string-to-int (match-string 3)))))
+        (let ((release (1+ (string-to-number (match-string 3)))))
           (setq release
                 (concat (match-string 2) (int-to-string release) (match-string 4)))
           (replace-match (concat (match-string 1) release))
@@ -1343,18 +1349,18 @@ if one is present in the file."
              (if (string-match "%{?\\([^}]*\\)}?$" str)
                  (progn
                    (goto-char (point-min))
-                   (setq macros (substring str (match-beginning 1)
-                                           (match-end 1)))
-                   (search-forward-regexp
-                    (concat "%define[ \t]+" macros
-                            "[ \t]+\\(\\([0-9]\\|\\.\\)+\\)\\(.*\\)"))
-                   (concat macros " " (int-to-string (1+ (string-to-int
-                                                          (match-string 1))))
-                           (match-string 3)))
+                   (let ((macros (substring str (match-beginning 1)
+                                            (match-end 1))))
+                     (search-forward-regexp
+                      (concat "%define[ \t]+" macros
+                              "[ \t]+\\(\\([0-9]\\|\\.\\)+\\)\\(.*\\)"))
+                     (concat macros " " (int-to-string (1+ (string-to-number
+                                                            (match-string 1))))
+                             (match-string 3))))
                str)))
-        (setq dinrel inrel)
-        (replace-match (concat "%define " dinrel))
-        (message "Release tag changed to %s." dinrel)))))
+        (let ((dinrel inrel))
+          (replace-match (concat "%define " dinrel))
+          (message "Release tag changed to %s." dinrel))))))
 
 ;;------------------------------------------------------------
 
