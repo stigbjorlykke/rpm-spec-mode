@@ -66,6 +66,8 @@
 
 (defconst rpm-spec-mode-version "0.14" "Version of `rpm-spec-mode'.")
 
+(eval-and-compile (defvar running-xemacs nil))
+
 (defgroup rpm-spec nil
   "RPM spec mode with Emacs/XEmacs enhancements."
   :prefix "rpm-spec-"
@@ -481,6 +483,8 @@ value returned by function `user-mail-address'."
   (modify-syntax-entry ?& "." rpm-spec-mode-syntax-table)
   (modify-syntax-entry ?| "." rpm-spec-mode-syntax-table)
   (modify-syntax-entry ?\' "." rpm-spec-mode-syntax-table))
+
+(eval-when-compile (or running-xemacs (defun set-keymap-name (a b))))
 
 (defvar rpm-spec-mode-map nil
   "Keymap used in `rpm-spec-mode'.")
