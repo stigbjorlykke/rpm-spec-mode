@@ -34,6 +34,8 @@
 ;;          <teg@redhat.com> for Red Hat adaptions and some fixes.
 ;;     Chmouel Boudjnah <chmouel@mandrakesoft.com> for Mandrake fixes.
 ;;     Ville Skyttä  <scop@xemacs.org> for some fixes.
+;;     Adam Spiers <elisp@adamspiers.org> for GNU emacs compilation
+;;          and other misc fixes.
 
 ;;; ToDo:
 
