@@ -608,7 +608,7 @@ value returned by function `user-mail-address'."
          '(1 'rpm-spec-tag-face))
    '("%\\(de\\(fine\\|scription\\)\\|files\\|global\\|package\\)[ \t]+\\([^-][^ \t\n]*\\)"
      (3 rpm-spec-package-face))
-   '("%p\\(ost\\|re\\)\\(un\\|trans\\)?[ \t]+\\([^-][^ \t\n]*\\)"
+   '("^%p\\(ost\\|re\\)\\(un\\|trans\\)?[ \t]+\\([^-][^ \t\n]*\\)"
      (3 rpm-spec-package-face))
    '("%configure " 0 rpm-spec-macro-face)
    '("%dir[ \t]+\\([^ \t\n]+\\)[ \t]*" 1 rpm-spec-dir-face)
