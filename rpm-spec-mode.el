@@ -699,8 +699,7 @@ with no args, if that value is non-nil."
 
 (defun rpm-command-filter (process string)
   "Filter to process normal output."
-  (save-excursion
-    (set-buffer (process-buffer process))
+  (with-current-buffer (process-buffer process)
     (save-excursion
       (goto-char (process-mark process))
       (insert-before-markers string)
