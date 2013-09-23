@@ -4,7 +4,7 @@
 
 ;; Author:   Stig Bjørlykke, <stig@bjorlykke.org>
 ;; Keywords: unix, languages
-;; Version:  0.14
+;; Version:  0.15
 
 ;; This file is part of XEmacs.
 
