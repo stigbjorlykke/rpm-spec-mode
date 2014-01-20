@@ -66,7 +66,7 @@
 ;;; Code:
 (require 'compile)
 
-(defconst rpm-spec-mode-version "0.14" "Version of `rpm-spec-mode'.")
+(defconst rpm-spec-mode-version "0.15" "Version of `rpm-spec-mode'.")
 
 (eval-and-compile (defvar running-xemacs nil))
 
