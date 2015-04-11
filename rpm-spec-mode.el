@@ -1,10 +1,10 @@
 ;;; rpm-spec-mode.el --- RPM spec file editing commands for Emacs/XEmacs
 
-;; Copyright (C) 1997-2013 Stig Bjørlykke, <stig@bjorlykke.org>
+;; Copyright (C) 1997-2015 Stig Bjørlykke, <stig@bjorlykke.org>
 
 ;; Author:   Stig Bjørlykke, <stig@bjorlykke.org>
 ;; Keywords: unix, languages
-;; Version:  0.15
+;; Version:  0.16
 
 ;; This file is part of XEmacs.
 
@@ -66,7 +66,7 @@
 ;;; Code:
 (require 'compile)
 
-(defconst rpm-spec-mode-version "0.15" "Version of `rpm-spec-mode'.")
+(defconst rpm-spec-mode-version "0.16" "Version of `rpm-spec-mode'.")
 
 (eval-and-compile (defvar running-xemacs nil))
 
