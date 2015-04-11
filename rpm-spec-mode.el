@@ -257,11 +257,11 @@ value returned by function `user-mail-address'."
   (eval-when-compile
     (concat "^%"
             (regexp-opt
-             ;; From RPM 4.6.0 sources, file build/parseSpec.c: partList[].
-             '("build" "changelog" "check" "clean" "description" "files"
-               "install" "package" "post" "postun" "pretrans" "posttrans"
-               "pre" "prep" "preun" "trigger" "triggerin" "triggerpostun"
-               "triggerprein" "triggerun" "verifyscript") t)
+             ;; From RPM 4.12.0 sources, file build/parseSpec.c: partList[].
+             '("package" "prep" "build" "install" "check" "clean" "preun"
+               "postun" "pretrans" "posttrans" "pre" "post" "files" "changelog"
+               "description" "triggerpostun" "triggerprein" "triggerun"
+               "triggerin" "trigger" "verifyscript" "sepolicy") t)
             "\\b"))
   "Regular expression to match beginning of a section.")
 
