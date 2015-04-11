@@ -293,7 +293,7 @@ value returned by function `user-mail-address'."
 (defface rpm-spec-doc-face
   '(( ((class color) (background light)) (:foreground "magenta3") )
     ( ((class color) (background dark)) (:foreground "magenta") ))
-  "*Face for %doc entries in %files."
+  "*Face for %doc and %license entries in %files."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-dir-face
@@ -334,7 +334,7 @@ value returned by function `user-mail-address'."
 (defvar rpm-spec-dir-face
   'rpm-spec-dir-face "*Face for %dir entries in %files.")
 (defvar rpm-spec-doc-face
-  'rpm-spec-doc-face "*Face for %doc entries in %files.")
+  'rpm-spec-doc-face "*Face for %doc and %license entries in %files.")
 (defvar rpm-spec-ghost-face
   'rpm-spec-ghost-face "*Face for %ghost and %config entries in %files.")
 (defvar rpm-spec-section-face
@@ -620,7 +620,7 @@ value returned by function `user-mail-address'."
      (3 rpm-spec-package-face))
    '("%configure " 0 rpm-spec-macro-face)
    '("%dir[ \t]+\\([^ \t\n]+\\)[ \t]*" 1 rpm-spec-dir-face)
-   '("%doc\\(dir\\)?[ \t]+\\(.*\\)\n" 2 rpm-spec-doc-face)
+   '("%\\(doc\\(dir\\)?\\|license\\)[ \t]+\\(.*\\)\n" 3 rpm-spec-doc-face)
    '("%\\(ghost\\|config\\([ \t]*(.*)\\)?\\)[ \t]+\\(.*\\)\n"
      3 rpm-spec-ghost-face)
    '("^%.+-[a-zA-Z][ \t]+\\([a-zA-Z0-9\.-]+\\)" 1 rpm-spec-doc-face)
