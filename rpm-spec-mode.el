@@ -646,7 +646,45 @@ value returned by function `user-mail-address'."
 (define-abbrev-table 'rpm-spec-mode-abbrev-table ())
 
 ;;------------------------------------------------------------
+;; Imenu support
+(defun rpm-spec-mode-imenu-setup ()
+  "An all-in-one setup function to add `imenu' support to
+`rpm-spec-mode'."
+  (setq imenu-create-index-function
+        #'rpm-spec-mode-imenu-create-index-function))
 
+(defun rpm-spec-mode-imenu-create-index-function ()
+  "Creating a buffer index for `rpm-spec-mode' The function
+should take no arguments, and return an index alist for the
+current buffer. It is called within `save-excursion', so where it
+leaves point makes no difference."
+  (goto-char (point-min))
+  (let (rpm-imenu-index
+        (sub-package-name-regexp "[[:space:]]+-n[[:space:]]+\\([-_[:alnum:]]+\\)")
+        rpm-spec-imenu-index-alist
+        section
+        pos-marker
+        subpkg-name
+        submenu
+        new-index)
+    (while (re-search-forward rpm-section-regexp nil t)
+      (setq pos-marker (point-marker))
+      (setq section (match-string-no-properties 1))
+      ;; try to extract sub package name
+      (if (re-search-forward sub-package-name-regexp
+                             (line-end-position) t)
+          (setq subpkg-name (match-string-no-properties 1))
+        (setq subpkg-name "__default"))
+      ;; create/add the matched item to the index list
+      (setq new-index (cons subpkg-name pos-marker))
+      (if (setq submenu (assoc section rpm-imenu-index))
+          (setf (cdr submenu)
+                (cons new-index (cdr submenu)))
+        (add-to-list 'rpm-imenu-index
+                     (list section new-index))))
+    rpm-imenu-index))
+
+;;------------------------------------------------------------
 (add-hook 'rpm-spec-mode-new-file-hook 'rpm-spec-initialize)
 
 ;;;###autoload
@@ -707,6 +745,7 @@ with no args, if that value is non-nil."
   ;;Initialize font lock for GNU emacs.
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(rpm-spec-font-lock-keywords nil t))
+  (rpm-spec-mode-imenu-setup)
   (run-hooks 'rpm-spec-mode-hook))
 
 (defun rpm-command-filter (process string)
