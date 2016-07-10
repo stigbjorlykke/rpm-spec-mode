@@ -250,18 +250,23 @@ value returned by function `user-mail-address'."
 (defconst rpm-scripts
   '("pre" "post" "preun" "postun"
     "trigger" "triggerin" "triggerprein" "triggerun" "triggerpostun"
-    "pretrans" "posttrans" "verifyscript")
+    "pretrans" "posttrans" "verifyscript" "filetriggerin" "filetrigger"
+    "filetriggerun" "filetriggerpostun" "transfiletriggerin" "transfiletrigger"
+    "transfiletriggerun" "transfiletriggerun" "transfiletriggerpostun")
   "List of rpm scripts.")
 (defconst rpm-section-seperate "^%\\(\\w+\\)\\s-")
 (defconst rpm-section-regexp
   (eval-when-compile
     (concat "^%"
             (regexp-opt
-             ;; From RPM 4.12.0 sources, file build/parseSpec.c: partList[].
+             ;; From RPM 4.12.90 sources, file build/parseSpec.c: partList[].
              '("package" "prep" "build" "install" "check" "clean" "preun"
                "postun" "pretrans" "posttrans" "pre" "post" "files" "changelog"
                "description" "triggerpostun" "triggerprein" "triggerun"
-               "triggerin" "trigger" "verifyscript" "sepolicy") t)
+               "triggerin" "trigger" "verifyscript" "sepolicy" "filetriggerin"
+               "filetrigger" "filetriggerun" "filetriggerpostun"
+               "transfiletriggerin" "transfiletrigger" "transfiletriggerun"
+               "transfiletriggerun" "transfiletriggerpostun") t)
             "\\b"))
   "Regular expression to match beginning of a section.")
 
@@ -353,7 +358,7 @@ value returned by function `user-mail-address'."
 (defvar rpm-spec-nobuild-option "--nobuild" "Option for no build.")
 
 (defvar rpm-tags-list
-  ;; From RPM 4.12.0 sources, file build/parsePreamble.c: preambleList[]:
+  ;; From RPM 4.12.90 sources, file build/parsePreamble.c: preambleList[]:
   '(("Name")
     ("Version")
     ("Release")
@@ -400,6 +405,7 @@ value returned by function `user-mail-address'."
     ("DistTag")
     ("BugURL")
     ("OrderWithRequires")
+    ("RemovePathPostFixes")
     ;; ...plus some from rpm5.org:
     ("CVSId")
     ("SVNId")
