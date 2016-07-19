@@ -273,55 +273,47 @@ value returned by function `user-mail-address'."
 ;;------------------------------------------------------------
 
 (defface rpm-spec-tag-face
-  '(( ((class color) (background light)) (:foreground "blue3") )
-    ( ((class color) (background dark)) (:foreground "blue") ))
+  '((t (:inherit font-lock-keyword-face)))
   "*Face for tags."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-obsolete-tag-face
-  '(( ((class color)) (:foreground "white" :background "red") ))
+  '((t (:inherit font-lock-warning-face)))
   "*Face for obsolete tags."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-macro-face
-  '(( ((class color) (background light)) (:foreground "purple") )
-    ( ((class color) (background dark)) (:foreground "yellow") ))
+  '((t (:inherit font-lock-preprocessor-face)))
   "*Face for RPM macros and variables."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-var-face
-  '(( ((class color) (background light)) (:foreground "maroon") )
-    ( ((class color) (background dark)) (:foreground "maroon") ))
+  '((t (:inherit font-lock-variable-name-face)))
   "*Face for environment variables."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-doc-face
-  '(( ((class color) (background light)) (:foreground "magenta3") )
-    ( ((class color) (background dark)) (:foreground "magenta") ))
+  '((t (:inherit font-lock-doc-face)))
   "*Face for %doc and %license entries in %files."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-dir-face
-  '(( ((class color) (background light)) (:foreground "green4") )
-    ( ((class color) (background dark)) (:foreground "green") ))
+  '((t (:inherit font-lock-string-face)))
   "*Face for %dir entries in %files."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-package-face
-  '(( ((class color) (background light)) (:foreground "red3") )
-    ( ((class color) (background dark)) (:foreground "red") ))
+  '((t (:inherit font-lock-function-name-face)))
   "*Face for package tag."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-ghost-face
-  '(( ((class color) (background light)) (:foreground "gray50") )
-    ( ((class color) (background dark)) (:foreground "red") ))
+  '((t (:inherit font-lock-string-face)))
   "*Face for %ghost and %config entries in %files."
   :group 'rpm-spec-faces)
 
 (defface rpm-spec-section-face
-  '(( ((class color) (background light)) (:foreground "purple" :underline t) )
-    ( ((class color) (background dark)) (:foreground "yellow" :underline t) ))
+  '((t (:inherit font-lock-function-name-face)))
   "*Face for section markers."
   :group 'rpm-spec-faces)
 
