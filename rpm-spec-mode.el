@@ -666,10 +666,7 @@ Turning on RPM spec mode calls the value of the variable `rpm-spec-mode-hook'
 with no args, if that value is non-nil."
   (interactive)
   (kill-all-local-variables)
-  (condition-case nil
-      (require 'shindent)
-    (error
-     (require 'sh-script)))
+  (require 'sh-script)
   (require 'cc-mode)
   (use-local-map rpm-spec-mode-map)
   (setq major-mode 'rpm-spec-mode)
