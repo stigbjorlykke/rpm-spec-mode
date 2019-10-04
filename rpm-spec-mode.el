@@ -734,7 +734,7 @@ This variable is global by default, but you can make it buffer-local.")
 (defsubst rpm-change-log-date-string ()
   "Return the date string for today, inserted by \\[rpm-add-change-log-entry].
 If `rpm-change-log-uses-utc' is nil, \"today\" means the local time zone."
-  (format-time-string "%a %b %e %Y" nil rpm-change-log-uses-utc))
+  (format-time-string "%a %b %d %Y" nil rpm-change-log-uses-utc))
 
 (defun rpm-goto-add-change-log-header ()
   "Find change log and add header (if needed) for today"
