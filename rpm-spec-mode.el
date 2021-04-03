@@ -1,4 +1,4 @@
-;;; rpm-spec-mode.el --- RPM spec file editing commands for Emacs/XEmacs
+;;; rpm-spec-mode.el --- RPM spec mode for Emacs/XEmacs -*- lexical-binding:t -*-
 
 ;; Copyright (C) 1997-2015 Stig Bjørlykke, <stig@bjorlykke.org>
 
@@ -248,6 +248,7 @@ value returned by function `user-mail-address'."
     ("check") ("clean") ("changelog") ("files"))
   "Partial list of section names.")
 (defconst rpm-scripts
+  ;; trigger, filetrigger, transfiletrigger no found in build/parseScript.c
   '("pre" "post" "preun" "postun"
     "trigger" "triggerin" "triggerprein" "triggerun" "triggerpostun"
     "pretrans" "posttrans" "verifyscript" "filetriggerin" "filetrigger"
@@ -259,14 +260,16 @@ value returned by function `user-mail-address'."
   (eval-when-compile
     (concat "^%"
             (regexp-opt
-             ;; From RPM 4.12.90 sources, file build/parseSpec.c: partList[].
-             '("package" "prep" "build" "install" "check" "clean" "preun"
-               "postun" "pretrans" "posttrans" "pre" "post" "files" "changelog"
-               "description" "triggerpostun" "triggerprein" "triggerun"
-               "triggerin" "trigger" "verifyscript" "sepolicy" "filetriggerin"
+             ;; From RPM 4.16.1.3 sources, file build/parseSpec.c: partList[].
+             '("package" "prep" "generate_buildrequires" "build" "install"
+               "check" "clean" "preun" "postun" "pretrans" "posttrans"
+               "pre" "post" "files" "changelog" "description"
+               "triggerpostun" "triggerprein" "triggerun" "triggerin"
+               "trigger" "verifyscript" "sepolicy" "filetriggerin"
                "filetrigger" "filetriggerun" "filetriggerpostun"
                "transfiletriggerin" "transfiletrigger" "transfiletriggerun"
-               "transfiletriggerun" "transfiletriggerpostun") t)
+               "transfiletriggerun" "transfiletriggerpostun" "end"
+               "patchlist" "sourcelist") t)
             "\\b"))
   "Regular expression to match beginning of a section.")
 
@@ -358,7 +361,7 @@ value returned by function `user-mail-address'."
 (defvar rpm-spec-nobuild-option "--nobuild" "Option for no build.")
 
 (defvar rpm-tags-list
-  ;; From RPM 4.12.90 sources, file build/parsePreamble.c: preambleList[]:
+  ;; From RPM 4.16.1.3 sources, file build/parsePreamble.c: preambleList[]:
   '(("Name")
     ("Version")
     ("Release")
@@ -406,6 +409,7 @@ value returned by function `user-mail-address'."
     ("BugURL")
     ("OrderWithRequires")
     ("RemovePathPostFixes")
+    ("ModularityLabel")
     ;; ...plus some from rpm5.org:
     ("CVSId")
     ("SVNId")
